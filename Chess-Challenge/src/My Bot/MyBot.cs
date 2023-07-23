@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using ChessChallenge.API;
 
 public class MyBot : IChessBot
@@ -7,19 +8,33 @@ public class MyBot : IChessBot
     public Move Think(Board board, Timer timer)
     {
         Move[] moves = board.GetLegalMoves();
-        ArrayList moveorder = new ArrayList();
+        PriorityQueue<Move, int> mvpq = new PriorityQueue<Move, int>();
         foreach (Move mv in moves)
-            {
-                if (mv.IsCapture || mv.IsPromotion)
+        {
+            int val = int.MaxValue;
+                if (isCheckmate(board, mv))
                 {
-                    moveorder.Add(mv);
+                    return mv;
                 }
+                if (mv.IsCapture)
+                {
+                    val = 100 - (int) mv.CapturePieceType;
+                    
+                }
+                
+                
+                mvpq.Enqueue(mv, val);
             }
 
-        if (moveorder.Count > 0)
-        {
-            return (Move) moveorder[0];
-        } 
-            return moves[0];
+       
+            return mvpq.Dequeue();
+    }
+
+    public bool isCheckmate(Board board, Move move)
+    {
+        board.MakeMove(move);
+        bool isCMate = board.IsInCheckmate();
+        board.UndoMove(move);
+        return isCMate;
     }
 }
