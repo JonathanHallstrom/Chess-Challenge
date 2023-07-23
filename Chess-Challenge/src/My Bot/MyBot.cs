@@ -7,23 +7,29 @@ public class MyBot : IChessBot
 {
     public Move Think(Board board, Timer timer)
     {
-        int[] pieceValues = { 0, 100, 300, 300, 500, 900, 10000 };
+        int[] pieceValues = { 0, 100, 305, 333, 563, 950, 10000 };
         Move[] moves = board.GetLegalMoves();
         PriorityQueue<Move, int> mvpq = new PriorityQueue<Move, int>();
         foreach (Move mv in moves)
         {
-            int val = int.MaxValue;
+            int val = 10000;
                 if (isCheckmate(board, mv))
                 {
                     return mv;
                 }
                 if (mv.IsCapture)
                 {
-
-                    val = 10000;
                     Piece capturedPiece = board.GetPiece(mv.TargetSquare);
                     int capturedPieceValue = pieceValues[(int)capturedPiece.PieceType];
                     val = val - capturedPieceValue + pieceValues[(int)mv.CapturePieceType];
+                }
+
+                if (mv.IsPromotion)
+                {   
+                    board.MakeMove(mv);
+                    val -= pieceValues[(int)board.GetPiece(mv.TargetSquare).PieceType];
+                    // pieceValues[(int)mv.PromotionPieceType];
+                    
                 }
                 
                 
