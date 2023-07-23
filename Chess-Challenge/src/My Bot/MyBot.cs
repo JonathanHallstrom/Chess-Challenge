@@ -7,6 +7,7 @@ public class MyBot : IChessBot
 {
     public Move Think(Board board, Timer timer)
     {
+        int[] pieceValues = { 0, 100, 300, 300, 500, 900, 10000 };
         Move[] moves = board.GetLegalMoves();
         PriorityQueue<Move, int> mvpq = new PriorityQueue<Move, int>();
         foreach (Move mv in moves)
@@ -18,8 +19,11 @@ public class MyBot : IChessBot
                 }
                 if (mv.IsCapture)
                 {
-                    val = 100 - (int) mv.CapturePieceType;
-                    
+
+                    val = 10000;
+                    Piece capturedPiece = board.GetPiece(mv.TargetSquare);
+                    int capturedPieceValue = pieceValues[(int)capturedPiece.PieceType];
+                    val = val - capturedPieceValue + pieceValues[(int)mv.CapturePieceType];
                 }
                 
                 
