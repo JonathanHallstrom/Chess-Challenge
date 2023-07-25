@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using ChessChallenge.API;
 using Microsoft.CodeAnalysis;
 
-public sealed class MyBot : IChessBot
+public sealed class OurEvilBot : IChessBot
 {
     int[] pieceValues = { 0, 100, 305, 333, 563, 950, 10000 };
 
@@ -72,8 +72,7 @@ public sealed class MyBot : IChessBot
         foreach (Move move in legalMoves)
         {
             board.MakeMove(move);
-            // decay added for further-out moves to stop prioritizing longer checkmates
-            int evaluation = (int) (0.99 * -negaMax(board, depth - 1, -beta, -alpha, -color));
+            int evaluation = -negaMax(board, depth - 1, -beta, -alpha, -color);
             board.UndoMove(move);
 
             if (evaluation > bestEval)
