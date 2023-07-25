@@ -28,9 +28,9 @@ public sealed class MyBot : IChessBot
 
     Move chosenMove;
 
-    int maxDepth = 5;
+    int maxDepth;
 
-
+    bool endGame;
 
     int negaMax(Board board, int depth, int alpha, int beta, int color)
     {
@@ -41,32 +41,29 @@ public sealed class MyBot : IChessBot
 
         if (board.IsDraw())
             return 0;
-    
+
         Move[] legalMoves = board.GetLegalMoves();
-        
+
         // if we finished the search, evaluate the position
         if (depth == 0 || legalMoves.Length == 0)
         {
-            if (board.IsInCheckmate())
-                return board.IsWhiteToMove ? -Int32.MaxValue : Int32.MaxValue;
-
             int eval = 0;
-
+            //  being checkmated is bad
+            if (board.IsInCheckmate())
+                return -1000_000_000;
+                    
             if (board.IsInCheck())
                 eval += board.IsWhiteToMove ? -100 : 100;
 
-            // for (int i = 1; i < 7; ++i)
-            // foreach (PieceList pieceList in board.GetAllPieceLists())
-            // {
-            //     
-            // }
-
+            // sum up the pieces from whites perspective
             for (int i = 1; i < 7; ++i)
                 eval += board.GetPieceList((PieceType)i, true).Count * pieceValues[i];
+
+            // sum up the pieces from blacks perspective
             for (int i = 1; i < 7; ++i)
                 eval -= board.GetPieceList((PieceType)i, false).Count * pieceValues[i];
 
-
+            // if we're white, color will be 1 otherwise -1
             return color * eval;
         }
 
@@ -105,12 +102,15 @@ public sealed class MyBot : IChessBot
             else
                 enemyPieceCount += pieceList.Count;
         }
+        
         chosenMove = board.GetLegalMoves()[0];
 
         if (enemyPieceCount * 2 <= myPieceCount)
-            maxDepth = 8;
+            endGame = true;
         else
-            maxDepth = 5;
+            endGame = false;
+
+        maxDepth = endGame ? 8 : 5;
 
         negaMax(board, maxDepth, -Int32.MaxValue, Int32.MaxValue, board.IsWhiteToMove ? 1 : -1);
         return chosenMove;
