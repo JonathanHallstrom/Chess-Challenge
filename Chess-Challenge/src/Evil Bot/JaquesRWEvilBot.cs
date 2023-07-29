@@ -1,4 +1,5 @@
-﻿﻿using ChessChallenge.API;
+﻿// https://github.com/JacquesRW/Chess-Challenge
+using ChessChallenge.API;
 using System;
 
 public class JaquesRWEvilBot : IChessBot
@@ -30,7 +31,7 @@ public class JaquesRWEvilBot : IChessBot
     public int Evaluate(Board board) {
         int mg = 0, eg = 0, phase = 0;
 
-        foreach(bool stm in new[] {true, false}) {
+        foreach(bool stm in stackalloc []{true, false}) {
             for(var p = PieceType.Pawn; p <= PieceType.King; p++) {
                 int piece = (int)p, ind;
                 ulong mask = board.GetPieceBitboard(p, stm);

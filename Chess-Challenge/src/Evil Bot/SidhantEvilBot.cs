@@ -1,4 +1,5 @@
-﻿using ChessChallenge.API;
+﻿// https://github.com/Sidhant-Roymoulik/Chess-Challenge/
+using ChessChallenge.API;
 using System;
 using System.Linq;
 using System.Numerics;
@@ -10,7 +11,7 @@ public class SidhantEvilBot : IChessBot
     static Board board;
     Timer timer;
     int time_limit = 0;
-    Move depth_move = new Move();
+    Move depth_move;
     Int64 nodes = 0;
 
     public Move Think(Board board_input, Timer timer_input)
